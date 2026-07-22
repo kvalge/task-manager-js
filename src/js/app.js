@@ -1,12 +1,31 @@
 import { addTask } from "./taskService.js";
 
-// Get a reference to the form element from the DOM
 const taskForm = document.getElementById("task-form");
 
-// Listen for the form's submit event
-taskForm.addEventListener("submit", function (event) {
-  // Prevent the browser's default behavior of reloading the page
+taskForm.addEventListener("submit", async function (event) {
   event.preventDefault();
 
-  console.log("Form submitted");
+  const titleInput = document.getElementById("title");
+  const descriptionInput = document.getElementById("description");
+  const statusInput = document.getElementById("status");
+  const priorityInput = document.getElementById("priority");
+  const dueDateInput = document.getElementById("dueDate");
+  const tagsInput = document.getElementById("tags");
+
+  const taskInput = {
+    title: titleInput.value,
+    description: descriptionInput.value,
+    status: statusInput.value,
+    priority: priorityInput.value,
+    dueDate: dueDateInput.value,
+    tags: tagsInput.value.split(",").map(tag => tag.trim()).filter(tag => tag !== "")
+  };
+
+  try {
+    const newTask = await addTask(taskInput);
+    console.log("Task added successfully:", newTask);
+    taskForm.reset();
+  } catch (error) {
+    console.error("Failed to add task:", error.message);
+  }
 });
