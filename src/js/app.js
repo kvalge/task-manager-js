@@ -1,8 +1,14 @@
-import { addTask, deleteTask } from "./taskService.js";
+import { addTask, deleteTask, updateTask } from "./taskService.js";
 import { getTasks } from "./storage.js";
 
 const taskForm = document.getElementById("task-form");
 const taskList = document.getElementById("task-list");
+const submitButton = document.getElementById("submit-button");
+const cancelEditButton = document.getElementById("cancel-edit-button");
+
+// Holds the id of the task currently being edited, or null
+// when the form is being used to add a new task.
+let editingTaskId = null;
 
 // Reads all tasks from storage and displays them as list items
 // inside the task-list element.
@@ -11,9 +17,15 @@ async function renderTasks() {
 
   taskList.innerHTML = "";
 
-  tasks.forEach(task => {
+  tasks.forEach((task) => {
     const listItem = document.createElement("li");
     listItem.textContent = task.title;
+
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.addEventListener("click", function () {
+      startEditing(task);
+    });
 
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
@@ -22,10 +34,37 @@ async function renderTasks() {
       renderTasks();
     });
 
+    listItem.appendChild(editButton);
     listItem.appendChild(deleteButton);
     taskList.appendChild(listItem);
   });
 }
+
+// Fills the form with the given task's data and switches
+// the form into "edit mode" for that task.
+function startEditing(task) {
+  editingTaskId = task.id;
+
+  document.getElementById("title").value = task.title;
+  document.getElementById("description").value = task.description;
+  document.getElementById("status").value = task.status;
+  document.getElementById("priority").value = task.priority;
+  document.getElementById("dueDate").value = task.dueDate || "";
+  document.getElementById("tags").value = task.tags.join(", ");
+
+  submitButton.textContent = "Update Task";
+  cancelEditButton.style.display = "inline";
+}
+
+// Resets the form and switches it back to "add mode".
+function cancelEditing() {
+  editingTaskId = null;
+  taskForm.reset();
+  submitButton.textContent = "Add Task";
+  cancelEditButton.style.display = "none";
+}
+
+cancelEditButton.addEventListener("click", cancelEditing);
 
 taskForm.addEventListener("submit", async function (event) {
   event.preventDefault();
@@ -43,15 +82,23 @@ taskForm.addEventListener("submit", async function (event) {
     status: statusInput.value,
     priority: priorityInput.value,
     dueDate: dueDateInput.value,
-    tags: tagsInput.value.split(",").map(tag => tag.trim()).filter(tag => tag !== "")
+    tags: tagsInput.value
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag !== ""),
   };
 
   try {
-    await addTask(taskInput);
-    taskForm.reset();
+    if (editingTaskId === null) {
+      await addTask(taskInput);
+    } else {
+      await updateTask(editingTaskId, taskInput);
+      cancelEditing();
+    }
+
     renderTasks();
   } catch (error) {
-    console.error("Failed to add task:", error.message);
+    console.error("Failed to save task:", error.message);
   }
 });
 

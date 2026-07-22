@@ -41,4 +41,30 @@ async function deleteTask(id) {
   await saveTasks(updatedTasks);
 }
 
-export { addTask, deleteTask };
+// Updates the task with the given id using the provided fields,
+// validates the result, then saves it.
+// Throws an Error if no task with that id exists or validation fails.
+async function updateTask(id, updates) {
+  const existingTasks = await getTasks();
+  const taskIndex = existingTasks.findIndex(task => task.id === id);
+
+  if (taskIndex === -1) {
+    throw new Error(`Task with id ${id} not found`);
+  }
+
+  const updatedTask = { ...existingTasks[taskIndex], ...updates, id };
+
+  const errors = validateTask(updatedTask);
+  if (errors.length > 0) {
+    throw new Error(errors.join(", "));
+  }
+
+  const updatedTasks = [...existingTasks];
+  updatedTasks[taskIndex] = updatedTask;
+
+  await saveTasks(updatedTasks);
+
+  return updatedTask;
+}
+
+export { addTask, deleteTask, updateTask };
