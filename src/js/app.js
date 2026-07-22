@@ -1,4 +1,9 @@
-import { addTask, deleteTask, updateTask, filterTasks, searchTasks } from "./taskService.js";
+import {
+  addTask,
+  deleteTask,
+  updateTask,
+  filterAndSearchTasks,
+} from "./taskService.js";
 import { getTasks } from "./storage.js";
 
 const taskForm = document.getElementById("task-form");
@@ -11,6 +16,16 @@ const searchInput = document.getElementById("search-input");
 // Holds the id of the task currently being edited, or null
 // when the form is being used to add a new task.
 let editingTaskId = null;
+
+// Reads the current filter and search values from the UI,
+// then renders the matching tasks.
+async function refreshTaskList() {
+  const tasks = await filterAndSearchTasks(
+    filterStatus.value,
+    searchInput.value,
+  );
+  renderTasks(tasks);
+}
 
 // Reads all tasks from storage and displays them as list items
 // inside the task-list element.
@@ -35,7 +50,7 @@ async function renderTasks(tasks) {
     deleteButton.textContent = "Delete";
     deleteButton.addEventListener("click", async function () {
       await deleteTask(task.id);
-      renderTasks();
+      refreshTaskList();
     });
 
     listItem.appendChild(editButton);
@@ -100,20 +115,15 @@ taskForm.addEventListener("submit", async function (event) {
       cancelEditing();
     }
 
-    renderTasks();
+    taskForm.reset();
+    refreshTaskList();
   } catch (error) {
     console.error("Failed to save task:", error.message);
   }
 });
 
-filterStatus.addEventListener("change", async function () {
-  const filteredTasks = await filterTasks(filterStatus.value);
-  renderTasks(filteredTasks);
-});
+filterStatus.addEventListener("change", refreshTaskList);
 
-searchInput.addEventListener("input", async function () {
-  const searchResults = await searchTasks(searchInput.value);
-  renderTasks(searchResults);
-});
+searchInput.addEventListener("input", refreshTaskList);
 
-renderTasks();
+refreshTaskList();

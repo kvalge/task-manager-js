@@ -67,35 +67,27 @@ async function updateTask(id, updates) {
   return updatedTask;
 }
 
-// Returns tasks that match the given status.
-// If status is "all" or not provided, returns all tasks unchanged.
-async function filterTasks(status) {
+// Returns tasks that match both the given status and search term.
+// Pass "all" or omit status to skip status filtering.
+// Pass an empty string or omit searchTerm to skip text search.
+async function filterAndSearchTasks(status, searchTerm) {
   const tasks = await getTasks();
 
-  if (!status || status === "all") {
-    return tasks;
+  let result = tasks;
+
+  if (status && status !== "all") {
+    result = result.filter(task => task.status === status);
   }
 
-  return tasks.filter((task) => task.status === status);
-}
-
-// Returns tasks whose title or description contains the given
-// search term (case-insensitive). Returns all tasks if the
-// search term is empty.
-async function searchTasks(searchTerm) {
-  const tasks = await getTasks();
-
-  if (!searchTerm || searchTerm.trim() === "") {
-    return tasks;
-  }
-
-  const term = searchTerm.toLowerCase();
-
-  return tasks.filter(
-    (task) =>
+  if (searchTerm && searchTerm.trim() !== "") {
+    const term = searchTerm.toLowerCase();
+    result = result.filter(task =>
       task.title.toLowerCase().includes(term) ||
-      task.description.toLowerCase().includes(term),
-  );
+      task.description.toLowerCase().includes(term)
+    );
+  }
+
+  return result;
 }
 
-export { addTask, deleteTask, updateTask, filterTasks, searchTasks };
+export { addTask, deleteTask, updateTask, filterAndSearchTasks };
