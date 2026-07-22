@@ -1,12 +1,26 @@
 import { getTasks, saveTasks } from "./storage.js";
 import { validateTask } from "./validation.js";
 
+// Generates a unique id. Uses crypto.randomUUID when available,
+// otherwise falls back to a manual UUID-like string.
+function createId() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
+    const random = Math.floor(Math.random() * 16);
+    const value = char === "x" ? random : (random & 0x3) | 0x8;
+    return value.toString(16);
+  });
+}
+
 // Creates a new task object with a unique id and default values,
 // validates it, then saves it together with existing tasks.
 // Throws an Error if validation fails or storage operations fail.
 async function addTask(taskInput) {
   const newTask = {
-    id: crypto.randomUUID(),
+    id: createId(),
     title: taskInput.title,
     description: taskInput.description || "",
     status: taskInput.status || "todo",

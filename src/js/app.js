@@ -39,21 +39,30 @@ async function renderTasks(tasks) {
 
   tasks.forEach((task) => {
     const listItem = document.createElement("li");
-    listItem.textContent = task.title;
+
+    const title = document.createElement("span");
+    title.className = "task-title";
+    title.textContent = task.title;
 
     const editButton = document.createElement("button");
+    editButton.className = "btn-edit";
     editButton.textContent = "Edit";
     editButton.addEventListener("click", function () {
       startEditing(task);
     });
 
     const deleteButton = document.createElement("button");
+    deleteButton.className = "btn-delete";
     deleteButton.textContent = "Delete";
     deleteButton.addEventListener("click", async function () {
+      if (!confirm("Delete this task?")) {
+        return;
+      }
       await deleteTask(task.id);
       refreshTaskList();
     });
 
+    listItem.appendChild(title);
     listItem.appendChild(editButton);
     listItem.appendChild(deleteButton);
     taskList.appendChild(listItem);
@@ -73,7 +82,7 @@ function startEditing(task) {
   document.getElementById("tags").value = task.tags.join(", ");
 
   submitButton.textContent = "Update Task";
-  cancelEditButton.style.display = "inline";
+  cancelEditButton.classList.add("visible");
 }
 
 // Resets the form and switches it back to "add mode".
@@ -81,7 +90,7 @@ function cancelEditing() {
   editingTaskId = null;
   taskForm.reset();
   submitButton.textContent = "Add Task";
-  cancelEditButton.style.display = "none";
+  cancelEditButton.classList.remove("visible");
 }
 
 cancelEditButton.addEventListener("click", cancelEditing);
@@ -116,13 +125,13 @@ taskForm.addEventListener("submit", async function (event) {
       cancelEditing();
     }
 
-    formError.style.display = "none";
+    formError.classList.remove("visible");
     formError.textContent = "";
     taskForm.reset();
     refreshTaskList();
   } catch (error) {
     formError.textContent = error.message;
-    formError.style.display = "block";
+    formError.classList.add("visible");
   }
 });
 

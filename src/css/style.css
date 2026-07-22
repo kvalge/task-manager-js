@@ -1,0 +1,204 @@
+:root {
+  --navy: #0a2540;
+  --navy-hover: #143a5c;
+  --dark-red: #8b1a1a;
+  --dark-red-hover: #a32222;
+  --dark-gray: #2e2e2e;
+  --light-gray: #e8e8e8;
+  --white: #ffffff;
+  --border: #c4c4c4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  background: var(--light-gray);
+  color: var(--dark-gray);
+  line-height: 1.5;
+}
+
+h1 {
+  margin: 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--navy);
+  padding: 1.25rem 1.5rem;
+}
+
+h2 {
+  margin: 0 0 1rem;
+  color: var(--navy);
+  font-size: 1.25rem;
+  border-bottom: 1px solid var(--light-gray);
+  padding-bottom: 0.5rem;
+}
+
+#form-error {
+  display: none;
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  background: #f8eaea;
+  border: 1px solid var(--dark-red);
+  color: var(--dark-red);
+}
+
+#form-error.visible {
+  display: block;
+}
+
+#task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+#task-form label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--dark-gray);
+  margin-top: 0.5rem;
+}
+
+#task-form label:first-of-type {
+  margin-top: 0;
+}
+
+input[type="text"],
+input[type="date"],
+textarea,
+select {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--dark-gray);
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--navy);
+  outline-offset: 1px;
+  border-color: var(--navy);
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+#task-form button {
+  margin-top: 0.75rem;
+}
+
+button {
+  padding: 0.55rem 1rem;
+  border: none;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--white);
+  background: var(--navy);
+}
+
+button:hover {
+  background: var(--navy-hover);
+}
+
+#submit-button {
+  background: var(--navy);
+}
+
+#cancel-edit-button {
+  display: none;
+  background: var(--dark-gray);
+  margin-left: 0.5rem;
+}
+
+#cancel-edit-button:hover {
+  background: #454545;
+}
+
+#cancel-edit-button.visible {
+  display: inline-block;
+}
+
+#task-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+#task-filters input,
+#task-filters select {
+  flex: 1;
+  min-width: 140px;
+}
+
+#task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#task-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--light-gray);
+  border-left: 4px solid var(--navy);
+  color: var(--dark-gray);
+}
+
+#task-list li .task-title {
+  flex: 1;
+  min-width: 120px;
+  font-weight: 700;
+}
+
+#task-list .btn-edit {
+  background: var(--navy);
+}
+
+#task-list .btn-edit:hover {
+  background: var(--navy-hover);
+}
+
+#task-list .btn-delete {
+  background: var(--dark-red);
+}
+
+#task-list .btn-delete:hover {
+  background: var(--dark-red-hover);
+}
