@@ -12,6 +12,7 @@ const submitButton = document.getElementById("submit-button");
 const cancelEditButton = document.getElementById("cancel-edit-button");
 const filterStatus = document.getElementById("filter-status");
 const searchInput = document.getElementById("search-input");
+const formError = document.getElementById("form-error");
 
 // Holds the id of the task currently being edited, or null
 // when the form is being used to add a new task.
@@ -115,10 +116,13 @@ taskForm.addEventListener("submit", async function (event) {
       cancelEditing();
     }
 
+    formError.style.display = "none";
+    formError.textContent = "";
     taskForm.reset();
     refreshTaskList();
   } catch (error) {
-    console.error("Failed to save task:", error.message);
+    formError.textContent = error.message;
+    formError.style.display = "block";
   }
 });
 
