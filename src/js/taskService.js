@@ -12,7 +12,7 @@ async function addTask(taskInput) {
     status: taskInput.status || "todo",
     priority: taskInput.priority || "medium",
     dueDate: taskInput.dueDate || null,
-    tags: taskInput.tags || []
+    tags: taskInput.tags || [],
   };
 
   const errors = validateTask(newTask);
@@ -31,13 +31,13 @@ async function addTask(taskInput) {
 // Throws an Error if no task with that id exists.
 async function deleteTask(id) {
   const existingTasks = await getTasks();
-  const taskExists = existingTasks.some(task => task.id === id);
+  const taskExists = existingTasks.some((task) => task.id === id);
 
   if (!taskExists) {
     throw new Error(`Task with id ${id} not found`);
   }
 
-  const updatedTasks = existingTasks.filter(task => task.id !== id);
+  const updatedTasks = existingTasks.filter((task) => task.id !== id);
   await saveTasks(updatedTasks);
 }
 
@@ -46,7 +46,7 @@ async function deleteTask(id) {
 // Throws an Error if no task with that id exists or validation fails.
 async function updateTask(id, updates) {
   const existingTasks = await getTasks();
-  const taskIndex = existingTasks.findIndex(task => task.id === id);
+  const taskIndex = existingTasks.findIndex((task) => task.id === id);
 
   if (taskIndex === -1) {
     throw new Error(`Task with id ${id} not found`);
@@ -67,4 +67,16 @@ async function updateTask(id, updates) {
   return updatedTask;
 }
 
-export { addTask, deleteTask, updateTask };
+// Returns tasks that match the given status.
+// If status is "all" or not provided, returns all tasks unchanged.
+async function filterTasks(status) {
+  const tasks = await getTasks();
+
+  if (!status || status === "all") {
+    return tasks;
+  }
+
+  return tasks.filter((task) => task.status === status);
+}
+
+export { addTask, deleteTask, updateTask, filterTasks };

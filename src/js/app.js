@@ -1,10 +1,11 @@
-import { addTask, deleteTask, updateTask } from "./taskService.js";
+import { addTask, deleteTask, updateTask, filterTasks } from "./taskService.js";
 import { getTasks } from "./storage.js";
 
 const taskForm = document.getElementById("task-form");
 const taskList = document.getElementById("task-list");
 const submitButton = document.getElementById("submit-button");
 const cancelEditButton = document.getElementById("cancel-edit-button");
+const filterStatus = document.getElementById("filter-status");
 
 // Holds the id of the task currently being edited, or null
 // when the form is being used to add a new task.
@@ -12,8 +13,10 @@ let editingTaskId = null;
 
 // Reads all tasks from storage and displays them as list items
 // inside the task-list element.
-async function renderTasks() {
-  const tasks = await getTasks();
+async function renderTasks(tasks) {
+  if (tasks === undefined) {
+    tasks = await getTasks();
+  }
 
   taskList.innerHTML = "";
 
@@ -100,6 +103,11 @@ taskForm.addEventListener("submit", async function (event) {
   } catch (error) {
     console.error("Failed to save task:", error.message);
   }
+});
+
+filterStatus.addEventListener("change", async function () {
+  const filteredTasks = await filterTasks(filterStatus.value);
+  renderTasks(filteredTasks);
 });
 
 renderTasks();
