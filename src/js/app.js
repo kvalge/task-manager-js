@@ -1,4 +1,4 @@
-import { addTask, deleteTask, updateTask, filterTasks } from "./taskService.js";
+import { addTask, deleteTask, updateTask, filterTasks, searchTasks } from "./taskService.js";
 import { getTasks } from "./storage.js";
 
 const taskForm = document.getElementById("task-form");
@@ -6,6 +6,7 @@ const taskList = document.getElementById("task-list");
 const submitButton = document.getElementById("submit-button");
 const cancelEditButton = document.getElementById("cancel-edit-button");
 const filterStatus = document.getElementById("filter-status");
+const searchInput = document.getElementById("search-input");
 
 // Holds the id of the task currently being edited, or null
 // when the form is being used to add a new task.
@@ -108,6 +109,11 @@ taskForm.addEventListener("submit", async function (event) {
 filterStatus.addEventListener("change", async function () {
   const filteredTasks = await filterTasks(filterStatus.value);
   renderTasks(filteredTasks);
+});
+
+searchInput.addEventListener("input", async function () {
+  const searchResults = await searchTasks(searchInput.value);
+  renderTasks(searchResults);
 });
 
 renderTasks();

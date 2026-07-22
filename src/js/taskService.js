@@ -79,4 +79,23 @@ async function filterTasks(status) {
   return tasks.filter((task) => task.status === status);
 }
 
-export { addTask, deleteTask, updateTask, filterTasks };
+// Returns tasks whose title or description contains the given
+// search term (case-insensitive). Returns all tasks if the
+// search term is empty.
+async function searchTasks(searchTerm) {
+  const tasks = await getTasks();
+
+  if (!searchTerm || searchTerm.trim() === "") {
+    return tasks;
+  }
+
+  const term = searchTerm.toLowerCase();
+
+  return tasks.filter(
+    (task) =>
+      task.title.toLowerCase().includes(term) ||
+      task.description.toLowerCase().includes(term),
+  );
+}
+
+export { addTask, deleteTask, updateTask, filterTasks, searchTasks };
