@@ -1,4 +1,4 @@
-import { addTask } from "./taskService.js";
+import { addTask, deleteTask } from "./taskService.js";
 import { getTasks } from "./storage.js";
 
 const taskForm = document.getElementById("task-form");
@@ -14,6 +14,15 @@ async function renderTasks() {
   tasks.forEach(task => {
     const listItem = document.createElement("li");
     listItem.textContent = task.title;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", async function () {
+      await deleteTask(task.id);
+      renderTasks();
+    });
+
+    listItem.appendChild(deleteButton);
     taskList.appendChild(listItem);
   });
 }

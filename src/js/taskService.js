@@ -27,4 +27,18 @@ async function addTask(taskInput) {
   return newTask;
 }
 
-export { addTask };
+// Removes the task with the given id from storage.
+// Throws an Error if no task with that id exists.
+async function deleteTask(id) {
+  const existingTasks = await getTasks();
+  const taskExists = existingTasks.some(task => task.id === id);
+
+  if (!taskExists) {
+    throw new Error(`Task with id ${id} not found`);
+  }
+
+  const updatedTasks = existingTasks.filter(task => task.id !== id);
+  await saveTasks(updatedTasks);
+}
+
+export { addTask, deleteTask };
